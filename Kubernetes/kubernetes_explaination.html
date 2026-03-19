@@ -429,61 +429,6 @@
   }
   footer a { color:var(--cyan); text-decoration:none; }
 
-  /* ─── HERO THEME BUTTON ─── */
-  .hero-theme-btn {
-    margin-bottom: 28px;
-    background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.2);
-    color: var(--text);
-    padding: 10px 24px;
-    border-radius: 100px;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: 'Space Grotesk', sans-serif;
-    transition: all 0.25s;
-    backdrop-filter: blur(8px);
-  }
-  .hero-theme-btn:hover {
-    background: rgba(255,255,255,0.15);
-    border-color: rgba(255,255,255,0.35);
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(0,0,0,0.2);
-  }
-  body.light-mode .hero-theme-btn {
-    background: rgba(59,130,246,0.1);
-    border-color: rgba(59,130,246,0.3);
-    color: #1E40AF;
-  }
-
-  /* ─── FLOATING ACTION BUTTON ─── */
-  .fab-toggle {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 999;
-    width: 52px;
-    height: 52px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #3B82F6, #8B5CF6);
-    border: none;
-    font-size: 1.3rem;
-    cursor: pointer;
-    box-shadow: 0 4px 20px rgba(59,130,246,0.4);
-    transition: all 0.25s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .fab-toggle:hover {
-    transform: translateY(-3px) scale(1.08);
-    box-shadow: 0 8px 28px rgba(59,130,246,0.5);
-  }
-  body.light-mode .fab-toggle {
-    background: linear-gradient(135deg, #1D4ED8, #7C3AED);
-    box-shadow: 0 4px 20px rgba(29,78,216,0.35);
-  }
-
   /* ─── SCROLLBAR ─── */
   ::-webkit-scrollbar { width:6px; height:6px; }
   ::-webkit-scrollbar-track { background: var(--navy); }
@@ -528,38 +473,53 @@
   body.light-mode .warn-box { background: rgba(239,68,68,0.05); color: #B91C1C; }
   body.light-mode .tip-box  { background: rgba(139,92,246,0.05); color: #6D28D9; }
 
-  /* ─── THEME TOGGLE BUTTON ─── */
+  /* ─── THEME TOGGLE BUTTON — fixed top-right corner ─── */
   .theme-toggle {
-    margin-left: auto;
-    flex-shrink: 0;
-    background: rgba(59,130,246,0.1);
-    border: 1px solid rgba(59,130,246,0.25);
+    position: fixed;
+    top: 16px;
+    right: 20px;
+    z-index: 9999;
+    background: rgba(15, 23, 60, 0.88);
+    border: 1.5px solid rgba(99,179,237,0.4);
     color: #93C5FD;
-    padding: 6px 14px;
-    border-radius: 8px;
-    font-size: 0.82rem;
+    padding: 9px 20px;
+    border-radius: 100px;
+    font-size: 0.85rem;
     font-weight: 600;
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
-    transition: all 0.2s;
+    gap: 8px;
+    transition: all 0.25s;
     font-family: 'Space Grotesk', sans-serif;
     white-space: nowrap;
+    backdrop-filter: blur(16px);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.35), 0 0 0 1px rgba(99,179,237,0.1);
   }
   .theme-toggle:hover {
-    background: rgba(59,130,246,0.18);
-    border-color: rgba(59,130,246,0.45);
-    color: var(--text);
+    background: rgba(59,130,246,0.28);
+    border-color: rgba(99,179,237,0.75);
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(59,130,246,0.35);
   }
   body.light-mode .theme-toggle {
-    background: rgba(59,130,246,0.08);
+    background: rgba(255,255,255,0.92);
     color: #1E40AF;
-    border-color: rgba(59,130,246,0.25);
+    border-color: rgba(59,130,246,0.45);
+    box-shadow: 0 4px 20px rgba(59,130,246,0.18);
+  }
+  body.light-mode .theme-toggle:hover {
+    background: #fff;
+    border-color: #3B82F6;
+    box-shadow: 0 8px 28px rgba(59,130,246,0.25);
   }
 </style>
 </head>
 <body>
+
+<!-- ════════ FIXED THEME TOGGLE — top right ════════ -->
+<button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark Mode</button>
 
 <!-- ════════ HERO ════════ -->
 <section class="hero">
@@ -574,12 +534,8 @@
     <span class="badge">🔐 RBAC</span>
     <span class="badge">📦 Helm</span>
   </div>
-  <button class="hero-theme-btn" onclick="toggleTheme()" id="heroThemeBtn">🌙 Switch to Light Mode</button>
   <div class="scroll-cue">↓ scroll to explore</div>
 </section>
-
-<!-- Floating fixed toggle button -->
-<button class="fab-toggle" id="fabToggle" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌙</button>
 
 <!-- ════════ NAV ════════ -->
 <nav>
@@ -600,7 +556,6 @@
     <a href="#helm">Helm</a>
     <a href="#kubectl">kubectl</a>
     <a href="#glossary">Glossary</a>
-    <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()">🌙 Dark</button>
   </div>
 </nav>
 
@@ -1861,18 +1816,12 @@ function initScrollAnimations() {
 function toggleTheme() {
   const body = document.body;
   const isLight = body.classList.toggle('light-mode');
-  const navBtn   = document.getElementById('themeToggle');
-  const heroBtn  = document.getElementById('heroThemeBtn');
-  const fabBtn   = document.getElementById('fabToggle');
+  const btn = document.getElementById('themeToggle');
   if (isLight) {
-    if (navBtn)  navBtn.textContent  = '☀️ Light';
-    if (heroBtn) heroBtn.textContent = '☀️ Switch to Dark Mode';
-    if (fabBtn)  fabBtn.textContent  = '☀️';
+    if (btn) btn.textContent = '☀️ Light Mode';
     localStorage.setItem('theme', 'light');
   } else {
-    if (navBtn)  navBtn.textContent  = '🌙 Dark';
-    if (heroBtn) heroBtn.textContent = '🌙 Switch to Light Mode';
-    if (fabBtn)  fabBtn.textContent  = '🌙';
+    if (btn) btn.textContent = '🌙 Dark Mode';
     localStorage.setItem('theme', 'dark');
   }
 }
@@ -1884,12 +1833,8 @@ document.addEventListener('DOMContentLoaded', () => {
   // Restore saved theme
   if (localStorage.getItem('theme') === 'light') {
     document.body.classList.add('light-mode');
-    const navBtn  = document.getElementById('themeToggle');
-    const heroBtn = document.getElementById('heroThemeBtn');
-    const fabBtn  = document.getElementById('fabToggle');
-    if (navBtn)  navBtn.textContent  = '☀️ Light';
-    if (heroBtn) heroBtn.textContent = '☀️ Switch to Dark Mode';
-    if (fabBtn)  fabBtn.textContent  = '☀️';
+    const btn = document.getElementById('themeToggle');
+    if (btn) btn.textContent = '☀️ Light Mode';
   }
   // Copyright year
   const yr = document.getElementById('copyright-year');
